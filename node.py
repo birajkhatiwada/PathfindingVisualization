@@ -1,13 +1,13 @@
 import pygame
 
 
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0,0,255)
+RED = (255, 65, 54)
+GREEN = (46, 204, 64)
+BLUE = (0, 116, 217)
 YELLOW = (255, 255, 0)
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-PURPLE = (128, 0, 128)
+WHITE = (207, 224, 232)
+BLACK = (17, 17, 17)
+PURPLE = (133, 20, 75)
 ORANGE = (255, 165, 0)
 GREY = (128, 128, 128)
 TURQUOISE = (64, 224, 208)
@@ -24,6 +24,10 @@ class Node:
         self.x = row * GAP
         self.y = col * GAP
         self.color = WHITE
+        self.neighbors = []
+
+    def get_neighbors(self):
+        return self.neighbors
 
     def get_pos(self):
         return self.row, self.col
@@ -50,7 +54,11 @@ class Node:
         self.color = BLUE
 
     def make_openNode(self):
-        self.color = GREEN
+        if not self.is_endNode():
+            self.color = GREEN
+
+    def make_closedNode(self):
+        self.color = RED
 
     def make_barrierNode(self):
         self.color = BLACK
@@ -59,10 +67,23 @@ class Node:
         self.color = WHITE
 
     def make_pathNode(self):
-        self.color = PURPLE
+        if not self.is_startNode() and not self.is_endNode():
+            self.color = PURPLE
 
     def drawNode(self, win):
         return pygame.draw.rect(win, self.color, (self.x, self.y, GAP, GAP))
 
-    # def update_neighbors(self, grid):
+    def update_neighbors(self, grid):
+        self.neighbors = []
+        if self.row > 0 and not grid[self.row-1][self.col].is_barrierNode():
+            self.neighbors.append(grid[self.row-1][self.col])
+        if self.row < ROWS-1 and not grid[self.row+1][self.col].is_barrierNode():
+            self.neighbors.append(grid[self.row+1][self.col])
+
+        if self.col > 0 and not grid[self.row][self.col-1].is_barrierNode():
+            self.neighbors.append(grid[self.row][self.col-1])
+        if self.col < ROWS-1 and not grid[self.row][self.col+1].is_barrierNode():
+            self.neighbors.append(grid[self.row][self.col+1])
+
+
 
